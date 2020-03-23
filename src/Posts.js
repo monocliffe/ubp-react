@@ -1,22 +1,31 @@
-import React, { Component } from "react";
+import React from 'react'
+import axios from 'axios'
 
-class Posts extends Component {
+export default class Posts extends React.Component {
+    state = {
+        posts: []
+    }
+
+    componentDidMount() {
+        axios.get('http://0.0.0.0:3000/posts.json')
+            .then(res => {
+                const posts = res.data;
+                this.setState({ posts });
+            })
+    }
+
     render() {
         return (
-            <div>
-                <h2>POSTS</h2>
-                <p>Mauris sem velit, vehicula eget sodales vitae,
-                    rhoncus eget sapien:</p>
-                <ol>
-                    <li>Nulla pulvinar diam</li>
-                    <li>Facilisis bibendum</li>
-                    <li>Vestibulum vulputate</li>
-                    <li>Eget erat</li>
-                    <li>Id porttitor</li>
-                </ol>
-            </div>
-        );
+            <ul>
+                { this.state.posts.map(post =>
+                    <div key={post.id}>
+                        <div>
+                            <h3>{post.title}</h3>
+                            <div dangerouslySetInnerHTML={{ __html: post.rich_body }}></div>
+                        </div>
+                    </div>
+                )}
+            </ul>
+        )
     }
 }
-
-export default Posts;
