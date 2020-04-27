@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { myConfig } from './modules/config';
 
 export default function Posts(props) {
     const [posts, setPosts] = useState([
@@ -9,7 +10,7 @@ export default function Posts(props) {
 
     async function fetchPostsData() {
         const response = await fetch(
-            `http://0.0.0.0:3000/posts.json`
+            myConfig.apiUrl + myConfig.ptsEnd
         );
         setPosts(await response.json());
     }
