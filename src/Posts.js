@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { myConfig } from './modules/config';
+const sanitizeHtml = require('sanitize-html');
 
 export default function Posts(props) {
     const [posts, setPosts] = useState([
@@ -25,7 +26,9 @@ export default function Posts(props) {
                 <div key={post.id}>
                     <div>
                         <h3>{post.title}</h3>
-                        <div dangerouslySetInnerHTML={{__html: post.rich_body}}/>
+                        <div dangerouslySetInnerHTML={{__html: sanitizeHtml(post.rich_body, {
+                                allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ])
+                            })}}/>
                     </div>
                 </div>
             )}
