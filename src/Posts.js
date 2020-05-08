@@ -1,22 +1,37 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from 'react';
+import { myConfig } from './modules/config';
+const sanitizeHtml = require('sanitize-html');
 
-class Posts extends Component {
-    render() {
-        return (
-            <div>
-                <h2>POSTS</h2>
-                <p>Mauris sem velit, vehicula eget sodales vitae,
-                    rhoncus eget sapien:</p>
-                <ol>
-                    <li>Nulla pulvinar diam</li>
-                    <li>Facilisis bibendum</li>
-                    <li>Vestibulum vulputate</li>
-                    <li>Eget erat</li>
-                    <li>Id porttitor</li>
-                </ol>
-            </div>
+export default function Posts(props) {
+    const [posts, setPosts] = useState([
+        {
+            posts: []
+        }
+    ]);
+
+    async function fetchPostsData() {
+        const response = await fetch(
+            myConfig.apiUrl + myConfig.ptsEnd
         );
+        setPosts(await response.json());
     }
-}
 
-export default Posts;
+    useEffect(() => {
+        fetchPostsData(props.id);
+    }, [props.id]);
+
+    return (
+        <ul>
+            { posts.map(post =>
+                <div key={post.id}>
+                    <div>
+                        <h3>{post.title}</h3>
+                        <div dangerouslySetInnerHTML={{__html: sanitizeHtml(post.rich_body, {
+                                allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ])
+                            })}}/>
+                    </div>
+                </div>
+            )}
+        </ul>
+    );
+}
